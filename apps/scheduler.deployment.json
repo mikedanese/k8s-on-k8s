@@ -1,0 +1,62 @@
+{
+   "apiVersion": "extensions/v1beta1",
+   "kind": "Deployment",
+   "metadata": {
+      "labels": {
+         "component": "scheduler",
+         "tier": "control-plane"
+      },
+      "name": "kube-scheduler",
+      "namespace": "kube-system"
+   },
+   "spec": {
+      "replicas": 3,
+      "selector": {
+         "component": "scheduler",
+         "tier": "control-plane"
+      },
+      "template": {
+         "metadata": {
+            "labels": {
+               "component": "scheduler",
+               "tier": "control-plane",
+               "version": "green"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "/usr/local/bin/kube-scheduler",
+                     "--address=0.0.0.0",
+                     "--v=2",
+                     "--leader-elect"
+                  ],
+                  "image": "gcr.io/mikedanese-k8s/kube-scheduler:green",
+                  "livenessProbe": {
+                     "httpGet": {
+                        "path": "/healthz",
+                        "port": 10251
+                     },
+                     "initialDelaySeconds": 15,
+                     "timeoutSeconds": 15
+                  },
+                  "name": "kube-scheduler",
+                  "resources": {
+                     "requests": {
+                        "cpu": "0.1"
+                     }
+                  },
+                  "securityContext": {
+                     "privileged": false
+                  },
+                  "volumeMounts": [ ]
+               }
+            ],
+            "hostNetwork": false,
+            "hostPID": false,
+            "volumes": [ ]
+         }
+      }
+   }
+}

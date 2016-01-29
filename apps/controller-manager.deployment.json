@@ -1,0 +1,169 @@
+{
+   "apiVersion": "extensions/v1beta1",
+   "kind": "Deployment",
+   "metadata": {
+      "labels": {
+         "component": "controller-manager",
+         "tier": "control-plane"
+      },
+      "name": "kube-controller-manager",
+      "namespace": "kube-system"
+   },
+   "spec": {
+      "replicas": 3,
+      "selector": {
+         "component": "controller-manager",
+         "tier": "control-plane"
+      },
+      "template": {
+         "metadata": {
+            "labels": {
+               "component": "controller-manager",
+               "tier": "control-plane",
+               "version": "green"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "/usr/local/bin/kube-controller-manager",
+                     "--address=0.0.0.0",
+                     "--cluster-name=k-1",
+                     "--cluster-cidr=10.244.0.0/16",
+                     "--allocate-node-cidrs=true",
+                     "--cloud-provider=gce",
+                     "--service-account-private-key-file=/srv/kubernetes/server-key",
+                     "--root-ca-file=/srv/kubernetes/root-ca-file",
+                     "--leader-elect",
+                     "--v=2"
+                  ],
+                  "image": "gcr.io/mikedanese-k8s/kube-controller-manager:green",
+                  "livenessProbe": {
+                     "httpGet": {
+                        "path": "/healthz",
+                        "port": 10252
+                     },
+                     "initialDelaySeconds": 15,
+                     "timeoutSeconds": 15
+                  },
+                  "name": "kube-controller-manager",
+                  "resources": {
+                     "requests": {
+                        "cpu": "0.1"
+                     }
+                  },
+                  "securityContext": {
+                     "privileged": false
+                  },
+                  "volumeMounts": [
+                     {
+                        "mountPath": "/etc/ssl",
+                        "name": "etcssl",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/usr/share/ssl",
+                        "name": "usrsharessl",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/var/ssl",
+                        "name": "varssl",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/usr/ssl",
+                        "name": "usrssl",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/usr/lib/ssl",
+                        "name": "usrlibssl",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/usr/local/openssl",
+                        "name": "usrlocalopenssl",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/etc/openssl",
+                        "name": "etcopenssl",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/etc/pki/tls",
+                        "name": "etcpkitls",
+                        "readOnly": true
+                     },
+                     {
+                        "mountPath": "/srv/kubernetes",
+                        "name": "cm-secrets",
+                        "readOnly": true
+                     }
+                  ]
+               }
+            ],
+            "hostNetwork": false,
+            "hostPID": false,
+            "volumes": [
+               {
+                  "hostPath": {
+                     "path": "/etc/ssl"
+                  },
+                  "name": "etcssl"
+               },
+               {
+                  "hostPath": {
+                     "path": "/usr/share/ssl"
+                  },
+                  "name": "usrsharessl"
+               },
+               {
+                  "hostPath": {
+                     "path": "/var/ssl"
+                  },
+                  "name": "varssl"
+               },
+               {
+                  "hostPath": {
+                     "path": "/usr/ssl"
+                  },
+                  "name": "usrssl"
+               },
+               {
+                  "hostPath": {
+                     "path": "/usr/lib/ssl"
+                  },
+                  "name": "usrlibssl"
+               },
+               {
+                  "hostPath": {
+                     "path": "/usr/local/openssl"
+                  },
+                  "name": "usrlocalopenssl"
+               },
+               {
+                  "hostPath": {
+                     "path": "/etc/openssl"
+                  },
+                  "name": "etcopenssl"
+               },
+               {
+                  "hostPath": {
+                     "path": "/etc/pki/tls"
+                  },
+                  "name": "etcpkitls"
+               },
+               {
+                  "name": "cm-secrets",
+                  "secret": {
+                     "secretName": "cm-secrets"
+                  }
+               }
+            ]
+         }
+      }
+   }
+}

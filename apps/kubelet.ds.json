@@ -1,0 +1,65 @@
+{
+   "apiVersion": "extensions/v1beta1",
+   "kind": "DaemonSet",
+   "metadata": {
+      "labels": {
+         "component": "kubelet",
+         "tier": "node"
+      },
+      "name": "kubelet-green",
+      "namespace": "kube-system"
+   },
+   "spec": {
+      "template": {
+         "metadata": {
+            "labels": {
+               "component": "kubelet",
+               "tier": "node",
+               "version": "green"
+            }
+         },
+         "spec": {
+            "containers": [
+               {
+                  "command": [
+                     "nsenter",
+                     "--target=1",
+                     "--mount",
+                     "--wd=.",
+                     "--",
+                     "./kubelet",
+                     "--api-servers=https://k-1-master",
+                     "--enable-debugging-handlers=true",
+                     "--cloud-provider=gce",
+                     "--config=/etc/kubernetes/manifests",
+                     "--allow-privileged=True",
+                     "--v=4",
+                     "--cluster-dns=10.0.0.10",
+                     "--cluster-domain=cluster.local",
+                     "--cgroup-root=/",
+                     "--system-container=/system"
+                  ],
+                  "image": "gcr.io/mikedanese-k8s/kubelet:green",
+                  "livenessProbe": null,
+                  "name": "kubelet-green",
+                  "resources": {
+                     "requests": {
+                        "cpu": "0.1"
+                     }
+                  },
+                  "securityContext": {
+                     "privileged": true
+                  },
+                  "volumeMounts": [ ]
+               }
+            ],
+            "hostNetwork": true,
+            "hostPID": true,
+            "nodeSelector": {
+               "minion": "true"
+            },
+            "volumes": [ ]
+         }
+      }
+   }
+}

@@ -1,0 +1,36 @@
+#! /bin/bash
+
+set -o nounset
+set -o errexit
+set -o pipefail
+
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
+reset="$(tput sgr0)"
+
+TEST_DIR="test/"
+
+failed="false"
+
+for test_file in $(find ${TEST_DIR} -type f); do
+  echo "testing ${test_file}"
+  cmd=("jsonnet" "--jpath" "." "${test_file}")
+  output=$("${cmd[@]}" 2>&1) && errcode=0 || errcode="$?"
+  if [[ "${output}" == "true" && "${errcode}" == 0 ]]; then
+    echo "${green}PASS${reset}"
+  else
+    echo "${red}FAIL${reset}"
+    echo "  code: ${errcode}"
+    echo "   out: ${output}"
+    failed="true"
+  fi
+  echo
+done
+
+if [[ "$failed" == "true" ]]; then
+  echo "some tests failed"
+  exit 1
+fi
+
+echo "all tests passed"
+exit 0

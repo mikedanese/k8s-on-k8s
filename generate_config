@@ -1,0 +1,33 @@
+#! /bin/bash
+
+set -o nounset
+set -o errexit
+set -o pipefail
+
+red="$(tput setaf 1)"
+green="$(tput setaf 2)"
+reset="$(tput sgr0)"
+
+declare -r OUT_DIR="apps/"
+
+templates=(
+  "ks-deployment.jsonnet"
+  "kcm-deployment.jsonnet"
+  "kubelet-ds.jsonnet"
+)
+
+mkdir -p "${OUT_DIR}"
+
+for template in ${templates[@]}; do
+  cmd=(
+    "jsonnet"
+    "--multi"
+    "${OUT_DIR}"
+    "${template}"
+  )
+  echo "generating: ${template}"
+  "${cmd[@]}" \
+    | sed -e "s/^/  ${green}/" \
+    | sed -e "s/$/${reset}/"
+done
+
