@@ -33,7 +33,7 @@
                      "--cloud-provider=gce",
                      "--config=/etc/kubernetes/manifests",
                      "--allow-privileged=True",
-                     "--v=4",
+                     "--v=2",
                      "--cluster-dns=10.0.0.10",
                      "--cluster-domain=cluster.local",
                      "--cgroup-root=/",
@@ -42,6 +42,7 @@
                   "image": "gcr.io/mikedanese-k8s/kubelet:green",
                   "livenessProbe": null,
                   "name": "kubelet-green",
+                  "readinessProbe": null,
                   "resources": {
                      "requests": {
                         "cpu": "0.1"

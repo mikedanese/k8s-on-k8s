@@ -44,10 +44,15 @@
                         "path": "/healthz",
                         "port": 10252
                      },
-                     "initialDelaySeconds": 15,
-                     "timeoutSeconds": 15
+                     "initialDelaySeconds": 15
                   },
                   "name": "kube-controller-manager",
+                  "readinessProbe": {
+                     "httpGet": {
+                        "path": "/healthz",
+                        "port": 10252
+                     }
+                  },
                   "resources": {
                      "requests": {
                         "cpu": "0.1"

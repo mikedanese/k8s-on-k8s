@@ -61,7 +61,16 @@ of jsonnet. It's not really neccessary to understand this.
                                 port: pod.port,
                             },
                             initialDelaySeconds: 15,
-                            timeoutSeconds: 15,
+                        }
+                    else
+                        null,
+                readinessProbe:
+                    if pod.httpLiveness then
+                        {
+                            httpGet: {
+                                path: "/healthz",
+                                port: pod.port,
+                            },
                         }
                     else
                         null,

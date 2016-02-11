@@ -38,10 +38,15 @@
                         "path": "/healthz",
                         "port": 10251
                      },
-                     "initialDelaySeconds": 15,
-                     "timeoutSeconds": 15
+                     "initialDelaySeconds": 15
                   },
                   "name": "kube-scheduler",
+                  "readinessProbe": {
+                     "httpGet": {
+                        "path": "/healthz",
+                        "port": 10251
+                     }
+                  },
                   "resources": {
                      "requests": {
                         "cpu": "0.1"
