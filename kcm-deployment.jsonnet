@@ -5,7 +5,7 @@ local config = k8s.DefaultConfig({
   name: "kube-controller-manager",
   namespace: "kube-system",
   tier: "control-plane",
-  labels : {
+  labels: {
     component: "controller-manager",
   },
   pod: {
@@ -32,12 +32,12 @@ local config = k8s.DefaultConfig({
         "/usr/lib/ssl",
         "/usr/local/openssl",
         "/etc/openssl",
-        "/etc/pki/tls"
+        "/etc/pki/tls",
     ],
     secrets: [
         "cm-secrets",
     ],
-  }
+  },
 });
 
 {

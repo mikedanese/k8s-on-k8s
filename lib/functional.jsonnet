@@ -29,14 +29,14 @@
         else if segments[0] != "" then
             error "jq path must start with a '.'"
         else
-            std.makeArray(len-1, function(i) segments[i+1]),
+            std.makeArray(len - 1, function(i) segments[i + 1]),
 
     # doesn't hand objects with '.' in their keys yet.
     visitField(segments, func)::
         function(obj)
             local len = std.length(segments);
             if len > 0 then
-                local shorten = std.makeArray(len-1, function(i) segments[i+1]);
+                local shorten = std.makeArray(len - 1, function(i) segments[i + 1]);
                 {
                     [k]:
                         if k == segments[0] then

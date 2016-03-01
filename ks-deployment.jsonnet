@@ -5,7 +5,7 @@ local config = k8s.DefaultConfig({
   name: "kube-scheduler",
   namespace: "kube-system",
   tier: "control-plane",
-  labels : {
+  labels: {
     component: "scheduler",
   },
   pod: {
@@ -13,12 +13,12 @@ local config = k8s.DefaultConfig({
         "/usr/local/bin/kube-scheduler",
         "--address=0.0.0.0",
         "--v=2",
-        "--leader-elect"
+        "--leader-elect",
     ],
     image: "kube-scheduler",
     tag: env.kubeSchedulerTag,
     port: 10251,
-  }
+  },
 });
 
 {

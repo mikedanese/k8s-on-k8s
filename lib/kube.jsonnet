@@ -9,9 +9,9 @@ of jsonnet. It's not really neccessary to understand this.
     v1:: {
         local v1 = self,
 
-        ApiVersion:: { "apiVersion": "v1" },
+        ApiVersion:: { apiVersion: "v1" },
 
-        List(items):: v1.ApiVersion + {
+        List(items):: v1.ApiVersion {
             kind: "List",
             items: items,
         },
@@ -19,37 +19,37 @@ of jsonnet. It's not really neccessary to understand this.
 
     extensions:: {
         v1beta1:: {
-            ApiVersion:: { "apiVersion": "extensions/v1beta1" },
+            ApiVersion:: { apiVersion: "extensions/v1beta1" },
         },
 
         DaemonSet:: kube.extensions.v1beta1.ApiVersion {
-            kind: "DaemonSet"
+            kind: "DaemonSet",
         },
 
         Deployment:: kube.extensions.v1beta1.ApiVersion {
-            kind: "Deployment"
+            kind: "Deployment",
         },
     },
 
     VolumeMounts(tab)::
-        [{name: k, mountPath: tab[k], readonly: false} for k in std.objectFields(tab)],
+        [{ name: k, mountPath: tab[k], readonly: false } for k in std.objectFields(tab)],
 
     HostVolumes(tab)::
-        [{name: k, hostPath: {path: tab[k]}} for k in std.objectFields(tab)],
+        [{ name: k, hostPath: { path: tab[k] } } for k in std.objectFields(tab)],
 
     addLabels(labels)::
         function(obj)
-            std.mergePatch(obj, { metadata: { labels: labels } } ),
+            std.mergePatch(obj, { metadata: { labels: labels } }),
 
     PodSpec(config)::
         local pod = config.pod;
         {
             hostNetwork: pod.hostNetwork,
             hostPID: pod.hostPID,
-            containers:[{
+            containers: [{
                 name: config.name,
                 command: pod.command,
-                image: "%s/%s:%s" % [ pod.repository, pod.image, pod.tag ],
+                image: "%s/%s:%s" % [pod.repository, pod.image, pod.tag],
                 securityContext: {
                     privileged: pod.privileged,
                 },
@@ -83,21 +83,21 @@ of jsonnet. It's not really neccessary to understand this.
                     name: std.join("", std.split(path, "/")),
                     mountPath: path,
                     readOnly: true,
-                } for path in pod.hostVolumes ] +
+                } for path in pod.hostVolumes] +
                 [{
                     name: name,
                     mountPath: "/srv/kubernetes",
                     readOnly: true,
-                } for name in pod.secrets ],
+                } for name in pod.secrets],
             }],
             volumes: [{
                 name: std.join("", std.split(path, "/")),
-                hostPath: {path: path},
-            } for path in pod.hostVolumes ] +
+                hostPath: { path: path },
+            } for path in pod.hostVolumes] +
             [{
                 name: name,
-                secret: {secretName: name},
-            } for name in pod.secrets ],
+                secret: { secretName: name },
+            } for name in pod.secrets],
         },
 
 
@@ -113,7 +113,7 @@ of jsonnet. It's not really neccessary to understand this.
             tier: config.tier,
         };
         local addLabels = kube.addLabels(labels);
-        addLabels(template + {
+        addLabels(template {
             metadata: {
                 name: config.name,
                 namespace: config.namespace,
@@ -127,10 +127,10 @@ of jsonnet. It's not really neccessary to understand this.
                     },
                     spec: kube.PodSpec(config),
                 }),
-            }
+            },
         }),
 
-    Service(config):: kube.v1.ApiVersion + {
+    Service(config):: kube.v1.ApiVersion {
         local labels = config.labels {
             tier: config.tier,
         },
@@ -152,11 +152,11 @@ of jsonnet. It's not really neccessary to understand this.
     Deployment(config)::
         std.mergePatch(kube.PodController("Deployment", config), {
             spec: {
-                selector:  config.labels {
+                selector: config.labels {
                     tier: config.tier,
                 },
                 replicas: config.pod.replicas,
-            }
+            },
         }),
 
     DaemonSet(config)::
@@ -188,6 +188,6 @@ of jsonnet. It's not really neccessary to understand this.
                 hostPID: false,
                 hostVolumes: [],
                 secrets: [],
-            }
+            },
         }, config),
 }

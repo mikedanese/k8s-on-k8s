@@ -4,8 +4,8 @@ local env = import "env.json";
 local config = k8s.DefaultConfig({
   name: "kubelet-%s" % env.kubeletTag,
   namespace: "kube-system",
-  tier:"node",
-  labels : {
+  tier: "node",
+  labels: {
     component: "kubelet",
   },
   pod: {
@@ -25,7 +25,7 @@ local config = k8s.DefaultConfig({
         "--cluster-dns=10.0.0.10",
         "--cluster-domain=cluster.local",
         "--cgroup-root=/",
-        "--system-container=/system"
+        "--system-container=/system",
     ],
     image: "kubelet",
     tag: env.kubeletTag,
@@ -34,7 +34,7 @@ local config = k8s.DefaultConfig({
     hostPID: true,
     hostNetwork: true,
     port: 10250,
-  }
+  },
 });
 
 {
