@@ -12,8 +12,10 @@
    "spec": {
       "replicas": 3,
       "selector": {
-         "component": "scheduler",
-         "tier": "control-plane"
+         "matchLabels": {
+            "component": "scheduler",
+            "tier": "control-plane"
+         }
       },
       "template": {
          "metadata": {

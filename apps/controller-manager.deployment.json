@@ -12,15 +12,17 @@
    "spec": {
       "replicas": 3,
       "selector": {
-         "component": "controller-manager",
-         "tier": "control-plane"
+         "matchLabels": {
+            "component": "controller-manager",
+            "tier": "control-plane"
+         }
       },
       "template": {
          "metadata": {
             "labels": {
                "component": "controller-manager",
                "tier": "control-plane",
-               "version": "green"
+               "version": "blue"
             }
          },
          "spec": {
@@ -38,7 +40,7 @@
                      "--leader-elect",
                      "--v=2"
                   ],
-                  "image": "gcr.io/mikedanese-k8s/kube-controller-manager:green",
+                  "image": "gcr.io/mikedanese-k8s/kube-controller-manager:blue",
                   "livenessProbe": {
                      "httpGet": {
                         "path": "/healthz",

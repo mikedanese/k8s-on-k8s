@@ -152,8 +152,10 @@ of jsonnet. It's not really neccessary to understand this.
     Deployment(config)::
         std.mergePatch(kube.PodController("Deployment", config), {
             spec: {
-                selector: config.labels {
-                    tier: config.tier,
+                selector: {
+                    matchLabels: config.labels {
+                        tier: config.tier,
+                    },
                 },
                 replicas: config.pod.replicas,
             },
